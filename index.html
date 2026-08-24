@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BVIT Lecture Check - Master Admin Portal</title>
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  
+  <!-- FontAwesome 6 Pro CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Master Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase Web SDK (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. AUTHENTICATION MODAL OVERLAY
+       ======================================================================== -->
+  <div class="auth-wrapper" id="authWrapper">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <i class="fas fa-university"></i>
+      </div>
+      <h1 class="auth-title">BVIT Admin Portal</h1>
+      <p class="auth-subtitle">Bharati Vidyapeeth Institute of Technology<br>Lecture Inspection & Monitoring System</p>
+      
+      <form id="loginForm" class="auth-form" autocomplete="off">
+        <div class="input-group">
+          <label class="input-label">Admin Email ID</label>
+          <div class="input-field-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="emailInput" class="input-field" placeholder="Enter admin email (e.g. admin@bvit.edu)" autocomplete="off" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <div class="input-field-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="passwordInput" class="input-field" placeholder="Enter admin password" autocomplete="new-password" required>
+            <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+          </div>
+        </div>
+
+        <div class="auth-error" id="authError"></div>
+
+        <button type="submit" id="btnLogin" class="btn-primary">
+          Sign In to Portal <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. MAIN APPLICATION LAYOUT
+       ======================================================================== -->
+  <div class="app-container">
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon">
+          <i class="fas fa-clipboard-check"></i>
+        </div>
+        <div>
+          <div class="sidebar-title">BVIT Check</div>
+          <div class="sidebar-subtitle">Admin Workspace</div>
+        </div>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <button class="nav-item-btn active" data-section="dashboard">
+            <i class="fas fa-th-large"></i>
+            <span>Live Dashboard</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-section="reports">
+            <i class="fas fa-file-invoice"></i>
+            <span>Official Reports</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-section="timetable">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Master Timetable</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-section="checkers">
+            <i class="fas fa-users-cog"></i>
+            <span>Floor Inspectors</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="admin-profile">
+          <div class="admin-avatar">AD</div>
+          <div class="admin-info">
+            <div class="name" id="adminNameDisplay">Administrator</div>
+            <div class="role" id="adminRoleDisplay">admin@bvit.edu</div>
+          </div>
+        </div>
+        <button class="btn-logout" onclick="logoutAdmin()" title="Sign Out">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+      
+      <!-- Top Sticky App Bar -->
+      <header class="top-bar">
+        <div class="page-headline">
+          <h2 class="page-title" id="pageTitle">Live Inspection Dashboard</h2>
+          <p class="page-subtitle" id="pageSubtitle">Real-time overview of current lecture inspections</p>
+        </div>
+
+        <div class="top-actions">
+          <div class="live-indicator-pill">
+            <span class="pulse-dot"></span>
+            <span>REAL-TIME CLOUD</span>
+          </div>
+
+          <div class="date-selector-wrapper">
+            <i class="fas fa-calendar-day"></i>
+            <input type="date" id="mainDatePicker" class="date-input">
+          </div>
+
+          <button class="btn-icon" onclick="renderDashboard()" title="Refresh Live Data">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Print Official Header (Visible ONLY on PDF print) -->
+      <div class="print-header">
+        <h1 style="font-size: 22px; font-weight: 800;">BHARATI VIDYAPEETH INSTITUTE OF TECHNOLOGY, NAVI MUMBAI</h1>
+        <h3 style="font-size: 16px; margin: 4px 0;">DAILY LECTURE INSPECTION & ATTENDANCE MONITORING REPORT</h3>
+        <p style="font-size: 12px; color: #555;">Generated on: <span id="printTimestamp"></span> | Authority: Principal & Academic Monitoring Cell</p>
+      </div>
+
+      <!-- Content Panels -->
+      <div class="content-body">
+
+        <!-- ==================================================================
+             PANEL 1: LIVE DASHBOARD
+             ================================================================== -->
+        <section id="panel-dashboard" class="tab-panel active">
+          
+          <!-- Summary KPI Cards Grid -->
+          <div class="stats-grid">
+            
+            <div class="stat-card total">
+              <div class="stat-top">
+                <span class="stat-label">Total Expected</span>
+                <div class="stat-icon-box"><i class="fas fa-layer-group"></i></div>
+              </div>
+              <div class="stat-value" id="statTotalExpected">0</div>
+              <div class="stat-meta"><i class="fas fa-clock"></i> Scheduled today</div>
+              <div class="progress-track"><div class="progress-bar" style="width: 100%;"></div></div>
+            </div>
+
+            <div class="stat-card taken">
+              <div class="stat-top">
+                <span class="stat-label">Lectures Taken</span>
+                <div class="stat-icon-box"><i class="fas fa-check-circle"></i></div>
+              </div>
+              <div class="stat-value" id="statTotalTaken">0</div>
+              <div class="stat-meta"><i class="fas fa-chart-line"></i> <span id="pctTaken">0% completed</span></div>
+              <div class="progress-track"><div class="progress-bar" id="barTaken" style="width: 0%;"></div></div>
+            </div>
+
+            <div class="stat-card not-taken">
+              <div class="stat-top">
+                <span class="stat-label">Not Taken (Missed)</span>
+                <div class="stat-icon-box"><i class="fas fa-times-circle"></i></div>
+              </div>
+              <div class="stat-value" id="statTotalNotTaken">0</div>
+              <div class="stat-meta"><i class="fas fa-exclamation-circle"></i> <span id="pctNotTaken">0% missed</span></div>
+              <div class="progress-track"><div class="progress-bar" id="barNotTaken" style="width: 0%;"></div></div>
+            </div>
+
+            <div class="stat-card pending">
+              <div class="stat-top">
+                <span class="stat-label">Pending Checks</span>
+                <div class="stat-icon-box"><i class="fas fa-hourglass-half"></i></div>
+              </div>
+              <div class="stat-value" id="statTotalPending">0</div>
+              <div class="stat-meta"><i class="fas fa-spinner"></i> <span id="pctPending">0% remaining</span></div>
+              <div class="progress-track"><div class="progress-bar" id="barPending" style="width: 0%;"></div></div>
+            </div>
+
+          </div>
+
+          <!-- BVIT Accurate 3-Floor Filter & Controls Bar -->
+          <div class="filter-suite-card single-row-suite">
+            
+            <div class="filter-top-row">
+              <!-- Floor Tabs (Only BVIT Actual Floors: Ground, 3rd, 4th) -->
+              <div class="floor-tabs-bar" id="floorTabsContainer">
+                <button type="button" class="floor-tab-btn active" data-floor="ALL">
+                  <i class="fas fa-layer-group"></i> All Floors
+                </button>
+                <button type="button" class="floor-tab-btn" data-floor="Ground Floor">
+                  <i class="fas fa-flask"></i> Ground Floor (Labs & W/S)
+                </button>
+                <button type="button" class="floor-tab-btn" data-floor="Third Floor">
+                  <i class="fas fa-cube"></i> Third Floor
+                </button>
+                <button type="button" class="floor-tab-btn" data-floor="Fourth Floor">
+                  <i class="fas fa-cube"></i> Fourth Floor
+                </button>
+              </div>
+
+              <!-- Counter Badge -->
+              <div class="filter-results-bar">
+                <span id="filterResultsCount" class="results-badge"><i class="fas fa-check-circle"></i> Showing All 328 Lectures</span>
+              </div>
+            </div>
+
+            <!-- Controls Row: Status + Slot + Search + Reset -->
+            <div class="filter-row-controls">
+              
+              <!-- 1. Status Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-tasks"></i> Status</label>
+                <div class="custom-select-box">
+                  <select id="statusFilter" class="filter-select-enhanced">
+                    <option value="ALL">🎯 All Status</option>
+                    <option value="TAKEN">✓ Taken Only</option>
+                    <option value="NOT_TAKEN">✕ Not Taken Only</option>
+                    <option value="PENDING">⏳ Pending Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 2. Slot Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-clock"></i> Time Slot</label>
+                <div class="custom-select-box">
+                  <select id="slotFilter" class="filter-select-enhanced">
+                    <option value="ALL">⏰ All Slots (1 to 8)</option>
+                    <option value="1">Slot 1 (08:25 AM - 09:25 AM)</option>
+                    <option value="2">Slot 2 (09:25 AM - 10:25 AM)</option>
+                    <option value="3">Slot 3 (10:30 AM - 11:30 AM)</option>
+                    <option value="4">Slot 4 (11:30 AM - 12:30 PM)</option>
+                    <option value="5">Slot 5 (12:50 PM - 01:50 PM)</option>
+                    <option value="6">Slot 6 (01:50 PM - 02:50 PM)</option>
+                    <option value="7">Slot 7 (02:55 PM - 03:55 PM)</option>
+                    <option value="8">Slot 8 (03:55 PM - 04:55 PM)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 3. Search Input -->
+              <div class="filter-item-wrapper search-grow">
+                <label class="filter-item-label"><i class="fas fa-search"></i> Search Classroom / Teacher</label>
+                <div class="search-box-enhanced">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" id="searchInput" class="search-input-enhanced" placeholder="Search Room, Subject, Teacher, Inspector...">
+                  <button type="button" id="clearSearchBtn" class="btn-clear-search" style="display: none;" onclick="clearSearchInput()">&times;</button>
+                </div>
+              </div>
+
+              <!-- 4. Reset Button -->
+              <div class="filter-actions-wrapper">
+                <button type="button" class="btn-filter-reset" onclick="resetAllFilters()" title="Reset All Filters">
+                  <i class="fas fa-undo-alt"></i> Reset
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Slots Container (Populated by JS) -->
+          <div class="slots-container" id="slotsContainer"></div>
+
+        </section>
+
+        <!-- ==================================================================
+             PANEL 2: OFFICIAL REPORTS & EXPORT
+             ================================================================== -->
+        <section id="panel-reports" class="tab-panel">
+          
+          <!-- Ultra-Clean Official Reports Filter Suite -->
+          <div class="filter-suite-card reports-filter-card">
+            
+            <div class="reports-filter-grid">
+              
+              <!-- 1. From Date -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-calendar-alt"></i> From Date</label>
+                <div class="custom-select-box">
+                  <input type="date" id="reportFromDate" class="filter-select-enhanced">
+                </div>
+              </div>
+
+              <!-- 2. To Date -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-calendar-check"></i> To Date</label>
+                <div class="custom-select-box">
+                  <input type="date" id="reportToDate" class="filter-select-enhanced">
+                </div>
+              </div>
+
+              <!-- 3. Status Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-tasks"></i> Status</label>
+                <div class="custom-select-box">
+                  <select id="reportStatusFilter" class="filter-select-enhanced">
+                    <option value="ALL">🎯 All Status</option>
+                    <option value="TAKEN">✓ Taken Only</option>
+                    <option value="NOT_TAKEN">✕ Not Taken Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 4. Inspector Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-user-shield"></i> Floor Inspector</label>
+                <div class="custom-select-box">
+                  <select id="reportCheckerFilter" class="filter-select-enhanced">
+                    <option value="ALL">👮 All Inspectors</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 5. Search Bar -->
+              <div class="filter-item-wrapper search-grow">
+                <label class="filter-item-label"><i class="fas fa-search"></i> Search Logs</label>
+                <div class="search-box-enhanced">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" id="reportSearchInput" class="search-input-enhanced" placeholder="Room, Teacher, Subject, Remark...">
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Action Buttons Row -->
+            <div class="reports-actions-row">
+              <div class="reports-actions-left">
+                <button type="button" class="btn-apply-filters" onclick="filterReports()">
+                  <i class="fas fa-filter"></i> Apply Filter
+                </button>
+                <button type="button" class="btn-action-excel" onclick="exportReportsToCSV()">
+                  <i class="fas fa-file-excel"></i> Export Excel (CSV)
+                </button>
+                <button type="button" class="btn-action-print" onclick="printReportsPDF()">
+                  <i class="fas fa-print"></i> Print Official Report
+                </button>
+              </div>
+
+              <div class="reports-actions-right">
+                <span id="reportTotalRecords" class="results-badge"><i class="fas fa-database"></i> 0 Records Found</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="table-card">
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 16px; font-weight: 700;">Inspection Audit Trail</h3>
+              <span id="reportTableRecordsCount" style="font-size: 13px; font-weight: 700; color: var(--primary-light);">0 Records Found</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Sr.</th>
+                    <th>Date</th>
+                    <th>Room</th>
+                    <th>Class / Div</th>
+                    <th>Subject</th>
+                    <th>Teacher Name</th>
+                    <th>Time Slot</th>
+                    <th>Status</th>
+                    <th>Checked By</th>
+                    <th>Remark</th>
+                  </tr>
+                </thead>
+                <tbody id="reportsTableBody">
+                  <!-- Records Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================================================================
+             PANEL 3: MASTER TIMETABLE EXPLORER
+             ================================================================== -->
+        <section id="panel-timetable" class="tab-panel">
+          <div class="table-card">
+            <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="font-size: 18px; font-weight: 800;">Master Timetable Database</h3>
+                <p style="font-size: 12px; color: var(--text-secondary);">BVIT Complete Class & Lab Schedule</p>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Sr.</th>
+                    <th>Day</th>
+                    <th>Time Slot</th>
+                    <th>Floor</th>
+                    <th>Room No</th>
+                    <th>Class / Div</th>
+                    <th>Subject</th>
+                    <th>Teacher Name</th>
+                  </tr>
+                </thead>
+                <tbody id="timetableTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             PANEL 4: FLOOR INSPECTORS (CHECKERS) MANAGEMENT
+             ================================================================== -->
+        <section id="panel-checkers" class="tab-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 800;">Floor Inspectors</h3>
+              <p style="font-size: 13px; color: var(--text-secondary);">Manage authorized staff assigned for daily classroom inspections</p>
+            </div>
+            <button class="btn-primary" style="width: auto; padding: 10px 20px;" onclick="openAddCheckerModal()">
+              <i class="fas fa-user-plus"></i> Add New Inspector
+            </button>
+          </div>
+
+          <div class="stats-grid" id="checkersGrid">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ========================================================================
+       MODALS & TOAST CONTAINER
+       ======================================================================== -->
+  
+  <!-- Add Inspector Modal -->
+  <div class="modal-overlay" id="addCheckerModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">Register New Floor Inspector</h3>
+        <button class="btn-close-modal" onclick="closeAddCheckerModal()">&times;</button>
+      </div>
+      <form onsubmit="saveNewChecker(event)">
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label class="input-label">Full Name</label>
+          <input type="text" id="chkName" class="input-field" placeholder="e.g. Prof. Ajinkya Chavan" required>
+        </div>
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label class="input-label">Login Email ID</label>
+          <input type="email" id="chkEmail" class="input-field" placeholder="e.g. ajinkya@bvit.edu" required>
+        </div>
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label class="input-label">Mobile Number</label>
+          <input type="tel" id="chkMobile" class="input-field" placeholder="e.g. 9876543210" required>
+        </div>
+        <div class="input-group" style="margin-bottom: 14px;">
+          <label class="input-label">Assigned Floor</label>
+          <select id="chkFloor" class="input-field" style="padding-left: 14px;">
+            <option value="All Floors">All Floors</option>
+            <option value="Ground Floor (Labs & W/S)">Ground Floor (Labs & W/S)</option>
+            <option value="Third Floor">Third Floor</option>
+            <option value="Fourth Floor">Fourth Floor</option>
+          </select>
+        </div>
+        <div class="input-group" style="margin-bottom: 20px;">
+          <label class="input-label">Password</label>
+          <input type="text" id="chkPass" class="input-field" value="bvit123" required>
+        </div>
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-save"></i> Save Inspector Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Real-Time Toast Notifications Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Firebase Config & Master App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/timetable-data.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
