@@ -21,41 +21,97 @@
 <body>
 
   <!-- ========================================================================
-       1. AUTHENTICATION MODAL OVERLAY
+       1. AUTHENTICATION MODAL OVERLAY (SPLIT-SCREEN 3D CLAYMORPHIC DESIGN)
        ======================================================================== -->
   <div class="auth-wrapper" id="authWrapper">
-    <div class="auth-card">
-      <div class="auth-logo">
-        <i class="fas fa-university"></i>
-      </div>
-      <h1 class="auth-title">BVIT Admin Portal</h1>
-      <p class="auth-subtitle">Bharati Vidyapeeth Institute of Technology<br>Lecture Inspection & Monitoring System</p>
+    
+    <!-- Ambient Graphic Background Accents -->
+    <div class="auth-ambient-circle circle-1"></div>
+    <div class="auth-ambient-circle circle-2"></div>
+    <div class="auth-ambient-dot"></div>
+
+    <div class="auth-split-card">
       
-      <form id="loginForm" class="auth-form" autocomplete="off">
-        <div class="input-group">
-          <label class="input-label">Admin Email ID</label>
-          <div class="input-field-wrapper">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="emailInput" class="input-field" placeholder="Enter admin email (e.g. admin@bvit.edu)" autocomplete="off" required>
-          </div>
+      <!-- LEFT SIDE: 3D HERO ILLUSTRATION & MOTTO -->
+      <div class="auth-left-hero">
+        <div class="auth-hero-header">
+          <h2 class="auth-hero-title">
+            Smart Lecture Inspection &amp; <span class="highlight-orange">Faculty Monitoring</span> in Real-Time!
+          </h2>
+          <p class="auth-hero-sub">Bharati Vidyapeeth Institute of Technology, Navi Mumbai</p>
         </div>
 
-        <div class="input-group">
-          <label class="input-label">Password</label>
-          <div class="input-field-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="passwordInput" class="input-field" placeholder="Enter admin password" autocomplete="new-password" required>
-            <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+        <div class="auth-hero-image-wrapper">
+          <img src="login-hero.png" onerror="this.onerror=null;this.src='assets/login-hero.png';" alt="3D Education Illustration" class="auth-hero-img">
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: CLEAN FORM & BRAND ACCESS -->
+      <div class="auth-right-form">
+        
+        <div class="auth-brand-logo">
+          <div class="brand-symbol">
+            <i class="fas fa-university"></i>
           </div>
+          <span class="brand-text">BVIT <b>LectureCheck</b></span>
         </div>
 
-        <div class="auth-error" id="authError"></div>
+        <div class="auth-form-heading">
+          <h1 class="welcome-title">Welcome Back, Admin!</h1>
+          <p class="welcome-sub">Sign in to access your master inspection dashboard</p>
+        </div>
 
-        <button type="submit" id="btnLogin" class="btn-primary">
-          Sign In to Portal <i class="fas fa-arrow-right"></i>
-        </button>
-      </form>
+        <form id="loginForm" class="split-auth-form" autocomplete="off">
+          
+          <div class="form-control-box">
+            <label class="sr-only">Email ID</label>
+            <div class="input-container">
+              <input type="email" id="emailInput" class="split-input" placeholder="Enter your Email ID" autocomplete="off" required>
+            </div>
+          </div>
+
+          <div class="form-control-box">
+            <label class="sr-only">Password</label>
+            <div class="input-container">
+              <input type="password" id="passwordInput" class="split-input" placeholder="Enter your Password" autocomplete="new-password" required>
+              <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
+            </div>
+          </div>
+
+          <div class="auth-error" id="authError"></div>
+
+          <button type="submit" id="btnLogin" class="btn-split-submit">
+            Sign In to Portal <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+          </button>
+
+          <div class="auth-options-row">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberDevice" checked>
+              <span>Remember this device</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-link">Need Help?</a>
+          </div>
+
+          <div class="auth-divider-line">
+            <span>Or quick sign in with</span>
+          </div>
+
+          <div class="auth-social-row">
+            <button type="button" class="btn-social google" title="Google Workspace SSO"><i class="fab fa-google"></i></button>
+            <button type="button" class="btn-social microsoft" title="Microsoft 365 SSO"><i class="fab fa-microsoft"></i></button>
+            <button type="button" class="btn-social bvit" title="BVIT Portal Single Sign-On"><i class="fas fa-shield-alt"></i></button>
+          </div>
+
+          <div class="auth-legal-footer">
+            By signing in, you agree to BVIT IT Security Policies &amp; Terms.
+          </div>
+
+        </form>
+
+      </div>
+
     </div>
+
   </div>
 
   <!-- ========================================================================
