@@ -1323,25 +1323,21 @@ function openMemoInNewTab(record) {
             </p>
           </div>
 
-          <div class="memo-footer-section">
-            <div class="memo-cc-column">
-              <div class="memo-cc-item">
-                <strong>C.c. to 1) Hon. Secretary,</strong><br>
-                <span style="margin-left: 55px;">Bharati Vidyapeeth, Pune.</span>
-              </div>
-              <div class="memo-cc-item" style="margin-top: 12px;">
-                <strong style="margin-left: 45px;">2) Hon. Director,</strong><br>
-                <span style="margin-left: 60px;">B.V. Education Complex, C.B.D.</span>
-              </div>
+          <!-- 1. Principal Signature on the RIGHT Side FIRST -->
+          <div style="display: flex; justify-content: flex-end; margin-top: 45px; margin-bottom: 25px;">
+            <div style="text-align: center; min-width: 190px;">
+              <div style="height: 45px;"></div>
+              <strong style="font-size: 13pt; font-family: 'Times New Roman', Times, serif;">Principal</strong><br>
+              <span style="font-size: 12pt; font-family: 'Times New Roman', Times, serif;">BVIT, Navi Mumbai</span>
             </div>
+          </div>
 
-            <div class="memo-principal-column">
-              <div class="memo-sign-space"></div>
-              <div class="memo-sign-text">
-                <strong>Principal</strong><br>
-                <span>BVIT, Navi Mumbai</span>
-              </div>
-            </div>
+          <!-- 2. C.c. to on the LEFT Side BELOW Principal Signature -->
+          <div style="margin-top: 15px; font-size: 11.5pt; line-height: 1.45; font-family: 'Times New Roman', Times, serif;">
+            <div><strong>C.c. to 1) Hon. Secretary,</strong></div>
+            <div style="padding-left: 55px;">Bharati Vidyapeeth, Pune.</div>
+            <div style="margin-top: 8px; padding-left: 45px;"><strong>2) Hon. Director,</strong></div>
+            <div style="padding-left: 60px;">B.V. Education Complex, C.B.D.</div>
           </div>
         </div>
 
@@ -1408,26 +1404,22 @@ function generateBatchMemos() {
           </p>
         </div>
 
-        <div class="memo-footer-section">
-          <div class="memo-cc-column">
-            <div class="memo-cc-item">
-              <strong>C.c. to 1) Hon. Secretary,</strong><br>
-              <span style="margin-left: 55px;">Bharati Vidyapeeth, Pune.</span>
-            </div>
-            <div class="memo-cc-item" style="margin-top: 12px;">
-              <strong style="margin-left: 45px;">2) Hon. Director,</strong><br>
-              <span style="margin-left: 60px;">B.V. Education Complex, C.B.D.</span>
+        <!-- 1. Principal Signature on the RIGHT Side FIRST -->
+          <div style="display: flex; justify-content: flex-end; margin-top: 45px; margin-bottom: 25px;">
+            <div style="text-align: center; min-width: 190px;">
+              <div style="height: 45px;"></div>
+              <strong style="font-size: 13pt; font-family: 'Times New Roman', Times, serif;">Principal</strong><br>
+              <span style="font-size: 12pt; font-family: 'Times New Roman', Times, serif;">BVIT, Navi Mumbai</span>
             </div>
           </div>
 
-          <div class="memo-principal-column">
-            <div class="memo-sign-space"></div>
-            <div class="memo-sign-text">
-              <strong>Principal</strong><br>
-              <span>BVIT, Navi Mumbai</span>
-            </div>
+          <!-- 2. C.c. to on the LEFT Side BELOW Principal Signature -->
+          <div style="margin-top: 15px; font-size: 11.5pt; line-height: 1.45; font-family: 'Times New Roman', Times, serif;">
+            <div><strong>C.c. to 1) Hon. Secretary,</strong></div>
+            <div style="padding-left: 55px;">Bharati Vidyapeeth, Pune.</div>
+            <div style="margin-top: 8px; padding-left: 45px;"><strong>2) Hon. Director,</strong></div>
+            <div style="padding-left: 60px;">B.V. Education Complex, C.B.D.</div>
           </div>
-        </div>
       </div>
     `;
   }).join('');
