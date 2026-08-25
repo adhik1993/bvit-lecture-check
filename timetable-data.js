@@ -110,33 +110,6 @@ const DEFAULT_MASTER_TIMETABLE = [
   },
   {
     "day": "Monday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "305",
-    "classDiv": "FYEJ",
-    "subject": "BMS",
-    "teacherName": "MRS. JYOTI PANSE"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "SYME",
-    "subject": "PDR",
-    "teacherName": "Mr. SHARAD KANTUTE"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "02:55 PM - 03:55 PM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "TYME",
-    "subject": "ETM",
-    "teacherName": "Mrs. SARIKA KHARE"
-  },
-  {
-    "day": "Monday",
     "timeSlot": "09:25 AM - 10:25 AM",
     "floor": "Third Floor",
     "roomNo": "309",
@@ -296,60 +269,6 @@ const DEFAULT_MASTER_TIMETABLE = [
     "classDiv": "SYCM1",
     "subject": "CGR",
     "teacherName": "MRS. NAMRATA MADVI"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "MRS.JYOTI PANSE"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "Mrs. Jyoti Panse"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "CTE",
-    "teacherName": "Shubhada D"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "SYCE",
-    "subject": "CTE",
-    "teacherName": "Mrs. Shubhada D"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "SYCE",
-    "subject": "HEN",
-    "teacherName": "Mrs. Supriya Shinde"
-  },
-  {
-    "day": "Monday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "HEN",
-    "teacherName": "Supriya Shinde"
   },
   {
     "day": "Monday",
@@ -3053,42 +2972,6 @@ const DEFAULT_MASTER_TIMETABLE = [
   },
   {
     "day": "Tuesday",
-    "timeSlot": "11:30 AM - 12:30 PM",
-    "floor": "Third Floor",
-    "roomNo": "305",
-    "classDiv": "FYEJ",
-    "subject": "BMS",
-    "teacherName": "MRS. JYOTI PANSE"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "SYME",
-    "subject": "TEG",
-    "teacherName": "Mr. S. S. CHOURE"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "TYME",
-    "subject": "ETM",
-    "teacherName": "Mrs. SARIKA KHARE"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "11:30 AM - 12:30 PM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "TYME",
-    "subject": "AEN",
-    "teacherName": "Mr. P WANKHEDE"
-  },
-  {
-    "day": "Tuesday",
     "timeSlot": "08:25 AM - 09:25 AM",
     "floor": "Third Floor",
     "roomNo": "309",
@@ -3284,60 +3167,6 @@ const DEFAULT_MASTER_TIMETABLE = [
     "classDiv": "SYCM1",
     "subject": "DTE",
     "teacherName": "MR. ARJUN KADAM"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "MRS.JYOTI PANSE"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "Mrs. Jyoti Panse"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "Mrs. Jyoti Panse"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "MRS.JYOTI PANSE"
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ENG",
-    "teacherName": "Mr. Kirdat P.A."
-  },
-  {
-    "day": "Tuesday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ENG",
-    "teacherName": "MR.KIRDAT P.A."
   },
   {
     "day": "Tuesday",
@@ -5924,15 +5753,6 @@ const DEFAULT_MASTER_TIMETABLE = [
   },
   {
     "day": "Wednesday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "305",
-    "classDiv": "FYEJ",
-    "subject": "BMS",
-    "teacherName": "MRS. JYOTI PANSE"
-  },
-  {
-    "day": "Wednesday",
     "timeSlot": "09:25 AM - 10:25 AM",
     "floor": "Third Floor",
     "roomNo": "309",
@@ -6110,78 +5930,6 @@ const DEFAULT_MASTER_TIMETABLE = [
     "classDiv": "SYCM1",
     "subject": "DMS",
     "teacherName": "MR. MOHAN MALI"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ICT",
-    "teacherName": "MRS.SUPRIYA SHINDE"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ICT",
-    "teacherName": "Supriya Shinde"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "11:30 AM - 12:30 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "EGR",
-    "teacherName": "MRS.SAYALI PATIL"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "11:30 AM - 12:30 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "EGR",
-    "teacherName": "Sayali Patil"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "MRS.JYOTI PANSE"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "Mrs. Jyoti Panse"
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ENG",
-    "teacherName": "MR.KIRDAT P.A."
-  },
-  {
-    "day": "Wednesday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ENG",
-    "teacherName": "Mr. Kirdat P.A."
   },
   {
     "day": "Wednesday",
@@ -8867,24 +8615,6 @@ const DEFAULT_MASTER_TIMETABLE = [
   },
   {
     "day": "Thursday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "305",
-    "classDiv": "FYEJ",
-    "subject": "BMS",
-    "teacherName": "MRS. JYOTI PANSE"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "SYME",
-    "subject": "BEE",
-    "teacherName": "Mrs. SHITAL DESHMUKH"
-  },
-  {
-    "day": "Thursday",
     "timeSlot": "09:25 AM - 10:25 AM",
     "floor": "Third Floor",
     "roomNo": "309",
@@ -9107,87 +8837,6 @@ const DEFAULT_MASTER_TIMETABLE = [
     "classDiv": "SYCM1",
     "subject": "OOP",
     "teacherName": "MRS. SUWARNA NIMKARDE"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "CHE",
-    "teacherName": "Deepa P."
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "EGR",
-    "teacherName": "Sayali Patil"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "10:30 AM - 11:30 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "EGR",
-    "teacherName": "MRS.SAYALI PATIL"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "11:30 AM - 12:30 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "Mrs. Jyoti Panse"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "11:30 AM - 12:30 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "MRS.JYOTI PANSE"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "PHY",
-    "teacherName": "U. A. Patil"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "PHY",
-    "teacherName": "MRS.U.A.PATIL"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "MRS.JYOTI PANSE"
-  },
-  {
-    "day": "Thursday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "BMS",
-    "teacherName": "Mrs. Jyoti Panse"
   },
   {
     "day": "Thursday",
@@ -11603,33 +11252,6 @@ const DEFAULT_MASTER_TIMETABLE = [
   },
   {
     "day": "Friday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "305",
-    "classDiv": "FYEJ",
-    "subject": "BMS",
-    "teacherName": "MRS. JYOTI PANSE"
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "305",
-    "classDiv": "FYEJ",
-    "subject": "BMS",
-    "teacherName": "MRS. JYOTI PANSE"
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "306",
-    "classDiv": "SYME",
-    "subject": "PDR",
-    "teacherName": "Mr. SHARAD KANTUTE"
-  },
-  {
-    "day": "Friday",
     "timeSlot": "09:25 AM - 10:25 AM",
     "floor": "Third Floor",
     "roomNo": "309",
@@ -11807,51 +11429,6 @@ const DEFAULT_MASTER_TIMETABLE = [
     "classDiv": "SYCM1",
     "subject": "EIC",
     "teacherName": "MRS. ASHWINI PAWAR"
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "PHY",
-    "teacherName": "U. A. Patil"
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "09:25 AM - 10:25 AM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "PHY",
-    "teacherName": "MRS.U.A.PATIL"
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "12:50 PM - 01:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "CHE",
-    "teacherName": "Deepa P."
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ENG",
-    "teacherName": "MR.KIRDAT P.A."
-  },
-  {
-    "day": "Friday",
-    "timeSlot": "01:50 PM - 02:50 PM",
-    "floor": "Third Floor",
-    "roomNo": "318",
-    "classDiv": "FYCE",
-    "subject": "ENG",
-    "teacherName": "Mr. Kirdat P.A."
   },
   {
     "day": "Friday",
@@ -14633,5 +14210,275 @@ const DEFAULT_MASTER_TIMETABLE = [
     "classDiv": "SYEJ (Batch B)",
     "subject": "DTE",
     "teacherName": "Mr.Sutar S."
+  },
+  {
+    "day": "Monday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "ME",
+    "subject": "PDR",
+    "teacherName": "Sharad K."
+  },
+  {
+    "day": "Monday",
+    "timeSlot": "10:30 AM - 11:30 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "EJ",
+    "subject": "BMS",
+    "teacherName": "Jyoti. P"
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "ME",
+    "subject": "TEG",
+    "teacherName": "Choure S."
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "11:30 AM - 12:30 PM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "EJ",
+    "subject": "BMS",
+    "teacherName": "Jyoti. P"
+  },
+  {
+    "day": "Wednesday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "ME",
+    "subject": "EIC",
+    "teacherName": "Choure S."
+  },
+  {
+    "day": "Wednesday",
+    "timeSlot": "10:30 AM - 11:30 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "EJ",
+    "subject": "BMS",
+    "teacherName": "Jyoti. P"
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "ME",
+    "subject": "BEE",
+    "teacherName": "Shital D"
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "10:30 AM - 11:30 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "EJ",
+    "subject": "BMS",
+    "teacherName": "Jyoti. P"
+  },
+  {
+    "day": "Friday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "305",
+    "classDiv": "ME",
+    "subject": "PDR",
+    "teacherName": "Sharad K."
+  },
+  {
+    "day": "Monday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "BMS",
+    "teacherName": "Jyoti Panse"
+  },
+  {
+    "day": "Monday",
+    "timeSlot": "12:50 PM - 01:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "CTE",
+    "teacherName": "Shubhada D"
+  },
+  {
+    "day": "Monday",
+    "timeSlot": "01:50 PM - 02:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "HEN",
+    "teacherName": "Supriya Shinde"
+  },
+  {
+    "day": "Monday",
+    "timeSlot": "02:55 PM - 03:55 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "ETM",
+    "teacherName": "Sarika Khare"
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "BMS",
+    "teacherName": "Jyoti Panse"
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "10:30 AM - 11:30 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "ETM",
+    "teacherName": "Sarika Khare"
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "11:30 AM - 12:30 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "AEN",
+    "teacherName": "Wankhede P."
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "12:50 PM - 01:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "BMS",
+    "teacherName": "Jyoti Panse"
+  },
+  {
+    "day": "Tuesday",
+    "timeSlot": "01:50 PM - 02:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "ENG",
+    "teacherName": "Kirdat P.A."
+  },
+  {
+    "day": "Wednesday",
+    "timeSlot": "10:30 AM - 11:30 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "ICT",
+    "teacherName": "Supriya Shinde"
+  },
+  {
+    "day": "Wednesday",
+    "timeSlot": "11:30 AM - 12:30 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "EGR",
+    "teacherName": "Sayali Patil"
+  },
+  {
+    "day": "Wednesday",
+    "timeSlot": "12:50 PM - 01:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "BMS",
+    "teacherName": "Jyoti Panse"
+  },
+  {
+    "day": "Wednesday",
+    "timeSlot": "01:50 PM - 02:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "ENG",
+    "teacherName": "Kirdat P.A."
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "CHE",
+    "teacherName": "Deepa P."
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "10:30 AM - 11:30 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "EGR",
+    "teacherName": "Sayali Patil"
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "11:30 AM - 12:30 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "BMS",
+    "teacherName": "Jyoti Panse"
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "12:50 PM - 01:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "PHY",
+    "teacherName": "U. A. Patil"
+  },
+  {
+    "day": "Thursday",
+    "timeSlot": "01:50 PM - 02:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "BMS",
+    "teacherName": "Jyoti Panse"
+  },
+  {
+    "day": "Friday",
+    "timeSlot": "09:25 AM - 10:25 AM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "PHY",
+    "teacherName": "U. A. Patil"
+  },
+  {
+    "day": "Friday",
+    "timeSlot": "12:50 PM - 01:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "CHE",
+    "teacherName": "Deepa P."
+  },
+  {
+    "day": "Friday",
+    "timeSlot": "01:50 PM - 02:50 PM",
+    "floor": "Third Floor",
+    "roomNo": "318",
+    "classDiv": "FYCE/ME",
+    "subject": "ENG",
+    "teacherName": "Kirdat P.A."
   }
 ];
