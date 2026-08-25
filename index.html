@@ -300,34 +300,87 @@
             <!-- Controls Row: Status + Slot + Search + Reset -->
             <div class="filter-row-controls">
               
-              <!-- 1. Status Dropdown -->
+              <!-- 1. Custom Status Dropdown -->
               <div class="filter-item-wrapper">
-                <label class="filter-item-label"><i class="fas fa-tasks"></i> Status</label>
-                <div class="custom-select-box">
-                  <select id="statusFilter" class="filter-select-enhanced">
-                    <option value="" selected>🎯 Select Status</option>
-                    <option value="TAKEN">✓ Taken Only</option>
-                    <option value="NOT_TAKEN">✕ Not Taken Only</option>
-                    <option value="PENDING">⏳ Pending Only</option>
-                  </select>
+                <label class="filter-item-label"><i class="fas fa-tasks text-primary"></i> Status Filter</label>
+                <div class="custom-dropdown-container" id="customStatusDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customStatusDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-tasks trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedStatusText">All Status</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu">
+                    <div class="dropdown-item active" data-val="" onclick="handleCustomStatusSelect('', 'All Status')">
+                      <div class="item-left"><i class="fas fa-layer-group"></i> <span>All Status</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="TAKEN" onclick="handleCustomStatusSelect('TAKEN', '✓ Taken Only')">
+                      <div class="item-left"><i class="fas fa-check-circle" style="color: #10B981;"></i> <span>Taken Only</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="NOT_TAKEN" onclick="handleCustomStatusSelect('NOT_TAKEN', '✕ Not Taken Only')">
+                      <div class="item-left"><i class="fas fa-times-circle" style="color: #EF4444;"></i> <span>Not Taken Only</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="PENDING" onclick="handleCustomStatusSelect('PENDING', '⏳ Pending Only')">
+                      <div class="item-left"><i class="fas fa-hourglass-half" style="color: #F59E0B;"></i> <span>Pending Only</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- 2. Slot Dropdown -->
+              <!-- 2. Custom Slot Dropdown -->
               <div class="filter-item-wrapper">
-                <label class="filter-item-label"><i class="fas fa-clock"></i> Time Slot</label>
-                <div class="custom-select-box">
-                  <select id="slotFilter" class="filter-select-enhanced">
-                    <option value="" selected>⏰ Select Time Slot</option>
-                    <option value="1">Slot 1 (08:25 AM - 09:25 AM)</option>
-                    <option value="2">Slot 2 (09:25 AM - 10:25 AM)</option>
-                    <option value="3">Slot 3 (10:30 AM - 11:30 AM)</option>
-                    <option value="4">Slot 4 (11:30 AM - 12:30 PM)</option>
-                    <option value="5">Slot 5 (12:50 PM - 01:50 PM)</option>
-                    <option value="6">Slot 6 (01:50 PM - 02:50 PM)</option>
-                    <option value="7">Slot 7 (02:55 PM - 03:55 PM)</option>
-                    <option value="8">Slot 8 (03:55 PM - 04:55 PM)</option>
-                  </select>
+                <label class="filter-item-label"><i class="fas fa-clock text-primary"></i> Time Slot</label>
+                <div class="custom-dropdown-container" id="customSlotDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customSlotDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-clock trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedSlotText">All Time Slots</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu">
+                    <div class="dropdown-item active" data-val="" onclick="handleCustomSlotSelect('', 'All Time Slots')">
+                      <div class="item-left"><i class="fas fa-clock"></i> <span>All Time Slots</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="1" onclick="handleCustomSlotSelect('1', 'Slot 1 (08:25 AM - 09:25 AM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 1 (08:25 AM - 09:25 AM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="2" onclick="handleCustomSlotSelect('2', 'Slot 2 (09:25 AM - 10:25 AM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 2 (09:25 AM - 10:25 AM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="3" onclick="handleCustomSlotSelect('3', 'Slot 3 (10:30 AM - 11:30 AM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 3 (10:30 AM - 11:30 AM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="4" onclick="handleCustomSlotSelect('4', 'Slot 4 (11:30 AM - 12:30 PM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 4 (11:30 AM - 12:30 PM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="5" onclick="handleCustomSlotSelect('5', 'Slot 5 (12:50 PM - 01:50 PM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 5 (12:50 PM - 01:50 PM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="6" onclick="handleCustomSlotSelect('6', 'Slot 6 (01:50 PM - 02:50 PM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 6 (01:50 PM - 02:50 PM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="7" onclick="handleCustomSlotSelect('7', 'Slot 7 (02:55 PM - 03:55 PM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 7 (02:55 PM - 03:55 PM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="8" onclick="handleCustomSlotSelect('8', 'Slot 8 (03:55 PM - 04:55 PM)')">
+                      <div class="item-left"><i class="fas fa-history"></i> <span>Slot 8 (03:55 PM - 04:55 PM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -383,25 +436,51 @@
                 </div>
               </div>
 
-              <!-- 3. Status Dropdown -->
+              <!-- 3. Custom Status Dropdown -->
               <div class="filter-item-wrapper">
-                <label class="filter-item-label"><i class="fas fa-tasks"></i> Status</label>
-                <div class="custom-select-box">
-                  <select id="reportStatusFilter" class="filter-select-enhanced">
-                    <option value="ALL">🎯 All Status</option>
-                    <option value="TAKEN">✓ Taken Only</option>
-                    <option value="NOT_TAKEN">✕ Not Taken Only</option>
-                  </select>
+                <label class="filter-item-label"><i class="fas fa-tasks text-primary"></i> Status</label>
+                <div class="custom-dropdown-container" id="customReportStatusDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customReportStatusDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-tasks trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedReportStatusText">All Status</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu">
+                    <div class="dropdown-item active" data-val="ALL" onclick="handleCustomReportStatusSelect('ALL', 'All Status')">
+                      <div class="item-left"><i class="fas fa-layer-group"></i> <span>All Status</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="TAKEN" onclick="handleCustomReportStatusSelect('TAKEN', '✓ Taken Only')">
+                      <div class="item-left"><i class="fas fa-check-circle" style="color: #10B981;"></i> <span>Taken Only</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="NOT_TAKEN" onclick="handleCustomReportStatusSelect('NOT_TAKEN', '✕ Not Taken Only')">
+                      <div class="item-left"><i class="fas fa-times-circle" style="color: #EF4444;"></i> <span>Not Taken Only</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- 4. Inspector Dropdown -->
+              <!-- 4. Custom Inspector Dropdown -->
               <div class="filter-item-wrapper">
-                <label class="filter-item-label"><i class="fas fa-user-shield"></i> Floor Inspector</label>
-                <div class="custom-select-box">
-                  <select id="reportCheckerFilter" class="filter-select-enhanced">
-                    <option value="ALL">👮 All Inspectors</option>
-                  </select>
+                <label class="filter-item-label"><i class="fas fa-user-shield text-primary"></i> Floor Inspector</label>
+                <div class="custom-dropdown-container" id="customReportCheckerDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customReportCheckerDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-user-shield trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedReportCheckerText">All Inspectors</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu" id="reportCheckerMenu">
+                    <div class="dropdown-item active" data-val="ALL" onclick="handleCustomReportCheckerSelect('ALL', 'All Inspectors')">
+                      <div class="item-left"><i class="fas fa-users-cog"></i> <span>All Inspectors</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
                 </div>
               </div>
 
