@@ -19,8 +19,8 @@ let checkersList = [];
 let selectedDate = getLocalDateDbStr();
 let activeSection = 'dashboard';
 let activeFloorFilter = 'ALL';
-let activeSlotFilter = 'ALL';
-let activeStatusFilter = 'ALL';
+let activeSlotFilter = '';
+let activeStatusFilter = '';
 let searchQuery = '';
 let notifiedNotTakenIds = new Set();
 
@@ -163,8 +163,47 @@ function initNavigation() {
     btn.addEventListener('click', () => {
       const section = btn.getAttribute('data-section');
       switchSection(section);
+      closeMobileSidebar();
     });
   });
+
+  const toggleBtn = document.getElementById('btnSidebarToggle');
+  const closeBtn = document.getElementById('btnSidebarClose');
+  const backdrop = document.getElementById('sidebarBackdrop');
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      openMobileSidebar();
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      closeMobileSidebar();
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      closeMobileSidebar();
+    });
+  }
+}
+
+function openMobileSidebar() {
+  const sidebar = document.getElementById('appSidebar') || document.querySelector('.sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (sidebar) sidebar.classList.add('open');
+  if (backdrop) backdrop.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileSidebar() {
+  const sidebar = document.getElementById('appSidebar') || document.querySelector('.sidebar');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (sidebar) sidebar.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('active');
+  document.body.style.overflow = '';
 }
 
 function switchSection(sectionName) {
@@ -250,8 +289,8 @@ function clearSearchInput() {
 
 function resetAllFilters() {
   activeFloorFilter = 'ALL';
-  activeSlotFilter = 'ALL';
-  activeStatusFilter = 'ALL';
+  activeSlotFilter = '';
+  activeStatusFilter = '';
   searchQuery = '';
 
   document.querySelectorAll('#floorTabsContainer .floor-tab-btn').forEach(btn => {
@@ -259,10 +298,10 @@ function resetAllFilters() {
   });
 
   const statusFilter = document.getElementById('statusFilter');
-  if (statusFilter) statusFilter.value = 'ALL';
+  if (statusFilter) statusFilter.value = '';
 
   const slotFilter = document.getElementById('slotFilter');
-  if (slotFilter) slotFilter.value = 'ALL';
+  if (slotFilter) slotFilter.value = '';
 
   const searchInput = document.getElementById('searchInput');
   if (searchInput) searchInput.value = '';
@@ -517,6 +556,20 @@ function isClassMatching(c1, c2) {
   return clean1.includes(clean2) || clean2.includes(clean1);
 }
 
+function selectSlotFromPrompt(slotIndex) {
+  const slotFilter = document.getElementById('slotFilter');
+  if (slotFilter) slotFilter.value = slotIndex;
+  activeSlotFilter = slotIndex;
+  renderDashboard();
+}
+
+function selectStatusFromPrompt(statusVal) {
+  const statusFilter = document.getElementById('statusFilter');
+  if (statusFilter) statusFilter.value = statusVal;
+  activeStatusFilter = statusVal;
+  renderDashboard();
+}
+
 function renderDashboard() {
   const dayName = getDayOfWeek(selectedDate);
   const dayFilteredEntries = masterTimetableEntries.filter(e => {
@@ -530,6 +583,11 @@ function renderDashboard() {
 
   let totalExpected = 0;
   let totalDisplayedCards = 0;
+
+  const hasFilterSelected = (activeSlotFilter !== '' && activeSlotFilter !== 'ALL') || 
+                            (activeStatusFilter !== '' && activeStatusFilter !== 'ALL') || 
+                            (activeFloorFilter !== 'ALL') || 
+                            (searchQuery !== '');
 
   DEFAULT_SLOTS.forEach(slot => {
     const slotEntries = dayFilteredEntries.filter(e => isEntryInExactSlot(e.timeSlot, slot.start));
@@ -585,10 +643,13 @@ function renderDashboard() {
       else if (status === 'NOT_TAKEN') slotNotTakenCount++;
       else slotPendingCount++;
 
+      // If no filter selected, don't show cards
+      if (!hasFilterSelected) return '';
+
       // UI Filters
       if (activeFloorFilter !== 'ALL' && !card.floor.toLowerCase().includes(activeFloorFilter.toLowerCase())) return '';
-      if (activeSlotFilter !== 'ALL' && activeSlotFilter != slot.index) return '';
-      if (activeStatusFilter !== 'ALL' && activeStatusFilter !== status) return '';
+      if (activeSlotFilter && activeSlotFilter !== 'ALL' && activeSlotFilter != slot.index) return '';
+      if (activeStatusFilter && activeStatusFilter !== 'ALL' && activeStatusFilter !== status) return '';
       if (searchQuery) {
         const fullTxt = `${card.roomNo} ${card.classDiv} ${card.subject} ${card.teacherName} ${checkBy} ${remark}`.toLowerCase();
         if (!fullTxt.includes(searchQuery)) return '';
@@ -635,7 +696,7 @@ function renderDashboard() {
     totalExpected += roomCards.length;
     totalDisplayedCards += cardsHtml.length;
 
-    if (cardsHtml.length > 0) {
+    if (hasFilterSelected && cardsHtml.length > 0) {
       const slotBlock = document.createElement('div');
       slotBlock.className = 'slot-block';
       slotBlock.innerHTML = `
@@ -657,29 +718,6 @@ function renderDashboard() {
       slotsContainer.appendChild(slotBlock);
     }
   });
-
-  if (totalDisplayedCards === 0) {
-    slotsContainer.innerHTML = `
-      <div style="text-align: center; padding: 40px 20px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg);">
-        <i class="fas fa-search" style="font-size: 32px; color: var(--text-muted); margin-bottom: 12px;"></i>
-        <h4 style="font-size: 16px; font-weight: 700; color: #0F172A;">No Lectures Match Selected Filters</h4>
-        <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Try selecting another floor tab, status, slot, or clear your search query.</p>
-        <button type="button" class="btn-filter-reset" style="margin-top: 14px;" onclick="resetAllFilters()">
-          <i class="fas fa-undo-alt"></i> Reset All Filters
-        </button>
-      </div>
-    `;
-  }
-
-  // Update Filter Results Badge Counter
-  const resultsBadge = document.getElementById('filterResultsCount');
-  if (resultsBadge) {
-    if (activeFloorFilter === 'ALL' && activeStatusFilter === 'ALL' && activeSlotFilter === 'ALL' && !searchQuery) {
-      resultsBadge.innerHTML = `<i class="fas fa-layer-group"></i> Showing All ${totalExpected} Lectures`;
-    } else {
-      resultsBadge.innerHTML = `<i class="fas fa-filter"></i> Showing ${totalDisplayedCards} of ${totalExpected} Lectures`;
-    }
-  }
 
   // Calculate Overall Live Counts directly from allChecks (Matches Android App 1-to-1)
   const totalTaken = allChecks.filter(c => (c.status || '').toUpperCase() === 'TAKEN').length;
@@ -703,6 +741,104 @@ function renderDashboard() {
   document.getElementById('barTaken').style.width = `${takenPct}%`;
   document.getElementById('barNotTaken').style.width = `${notTakenPct}%`;
   document.getElementById('barPending').style.width = `${pendingPct}%`;
+
+  if (!hasFilterSelected) {
+    slotsContainer.innerHTML = `
+      <div class="dashboard-prompt-container">
+        <div class="prompt-hero-box">
+          <div class="prompt-icon-halo">
+            <div class="prompt-icon-inner">
+              <i class="fas fa-layer-group"></i>
+            </div>
+          </div>
+          <div class="prompt-hero-text">
+            <div class="prompt-badge"><span class="pulse-dot-sm"></span> REAL-TIME INSPECTION READY</div>
+            <h3 class="prompt-title">Select a Time Slot or Filter to Inspect</h3>
+            <p class="prompt-desc">Click any time slot below or select status/floor from above to view live lecture checks across BVIT campus.</p>
+          </div>
+        </div>
+
+        <div class="prompt-interactive-grid">
+          
+          <!-- Section 1: Quick Time Slot Selection -->
+          <div class="prompt-group-card">
+            <div class="prompt-group-header">
+              <i class="fas fa-clock" style="color: var(--primary-light);"></i>
+              <span>Select Time Slot (1 to 8)</span>
+            </div>
+            <div class="quick-slots-grid">
+              ${DEFAULT_SLOTS.map(s => `
+                <button type="button" class="quick-slot-btn" onclick="selectSlotFromPrompt('${s.index}')">
+                  <span class="q-slot-num">Slot ${s.index}</span>
+                  <span class="q-slot-time">${s.start} - ${s.end}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Section 2: Quick Status Filters -->
+          <div class="prompt-side-grid">
+            <div class="prompt-group-card">
+              <div class="prompt-group-header">
+                <i class="fas fa-chart-pie" style="color: var(--primary-light);"></i>
+                <span>Filter by Live Status</span>
+              </div>
+              <div class="quick-status-row">
+                <button type="button" class="quick-status-card taken" onclick="selectStatusFromPrompt('TAKEN')">
+                  <div class="q-stat-top">
+                    <i class="fas fa-check-circle"></i>
+                    <span class="q-stat-badge">${totalTaken} Confirmed</span>
+                  </div>
+                  <span class="q-stat-name">Lectures Taken</span>
+                  <span class="q-stat-sub">View ${totalTaken} completed lectures</span>
+                </button>
+                
+                <button type="button" class="quick-status-card not-taken" onclick="selectStatusFromPrompt('NOT_TAKEN')">
+                  <div class="q-stat-top">
+                    <i class="fas fa-times-circle"></i>
+                    <span class="q-stat-badge">${totalNotTaken} Missed</span>
+                  </div>
+                  <span class="q-stat-name">Not Taken (Missed)</span>
+                  <span class="q-stat-sub">View ${totalNotTaken} missed lectures</span>
+                </button>
+
+                <button type="button" class="quick-status-card pending" onclick="selectStatusFromPrompt('PENDING')">
+                  <div class="q-stat-top">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span class="q-stat-badge">${totalPending} Remaining</span>
+                  </div>
+                  <span class="q-stat-name">Pending Checks</span>
+                  <span class="q-stat-sub">View ${totalPending} pending verification</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+  } else if (totalDisplayedCards === 0) {
+    slotsContainer.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--radius-lg);">
+        <i class="fas fa-search" style="font-size: 32px; color: var(--text-muted); margin-bottom: 12px;"></i>
+        <h4 style="font-size: 16px; font-weight: 700; color: #0F172A;">No Lectures Match Selected Filters</h4>
+        <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Try selecting another floor tab, status, slot, or clear your search query.</p>
+        <button type="button" class="btn-filter-reset" style="margin-top: 14px;" onclick="resetAllFilters()">
+          <i class="fas fa-undo-alt"></i> Reset All Filters
+        </button>
+      </div>
+    `;
+  }
+
+  // Update Filter Results Badge Counter
+  const resultsBadge = document.getElementById('filterResultsCount');
+  if (resultsBadge) {
+    if (!hasFilterSelected) {
+      resultsBadge.innerHTML = `<i class="fas fa-info-circle"></i> Select filter to view lectures (${totalExpected} scheduled today)`;
+    } else {
+      resultsBadge.innerHTML = `<i class="fas fa-filter"></i> Showing ${totalDisplayedCards} of ${totalExpected} Lectures`;
+    }
+  }
 }
 
 /* ==========================================================================

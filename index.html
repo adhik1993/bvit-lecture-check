@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   
   <!-- Master Stylesheet -->
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="css/style.css">
 
   <!-- Firebase Web SDK (v10 Compat) -->
@@ -119,16 +118,24 @@
        ======================================================================== -->
   <div class="app-container">
 
-    <!-- Left Sidebar -->
-    <aside class="sidebar">
+    <!-- Mobile Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Left Sidebar (Clean Modern Light Theme) -->
+    <aside class="sidebar" id="appSidebar">
       <div class="sidebar-header">
-        <div class="sidebar-logo-icon">
-          <i class="fas fa-clipboard-check"></i>
+        <div class="sidebar-brand-wrapper">
+          <div class="sidebar-logo-icon">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <div>
+            <div class="sidebar-title">BVIT Check</div>
+            <div class="sidebar-subtitle">Admin Workspace</div>
+          </div>
         </div>
-        <div>
-          <div class="sidebar-title">BVIT Check</div>
-          <div class="sidebar-subtitle">Admin Workspace</div>
-        </div>
+        <button type="button" class="btn-sidebar-close" id="btnSidebarClose" aria-label="Close Sidebar">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
 
       <ul class="sidebar-menu">
@@ -177,9 +184,14 @@
       
       <!-- Top Sticky App Bar -->
       <header class="top-bar">
-        <div class="page-headline">
-          <h2 class="page-title" id="pageTitle">Live Inspection Dashboard</h2>
-          <p class="page-subtitle" id="pageSubtitle">Real-time overview of current lecture inspections</p>
+        <div class="top-bar-left">
+          <button type="button" class="btn-sidebar-toggle" id="btnSidebarToggle" aria-label="Toggle Navigation">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="page-headline">
+            <h2 class="page-title" id="pageTitle">Live Inspection Dashboard</h2>
+            <p class="page-subtitle" id="pageSubtitle">Real-time overview of current lecture inspections</p>
+          </div>
         </div>
 
         <div class="top-actions">
@@ -293,7 +305,7 @@
                 <label class="filter-item-label"><i class="fas fa-tasks"></i> Status</label>
                 <div class="custom-select-box">
                   <select id="statusFilter" class="filter-select-enhanced">
-                    <option value="ALL">🎯 All Status</option>
+                    <option value="" selected>🎯 Select Status</option>
                     <option value="TAKEN">✓ Taken Only</option>
                     <option value="NOT_TAKEN">✕ Not Taken Only</option>
                     <option value="PENDING">⏳ Pending Only</option>
@@ -306,7 +318,7 @@
                 <label class="filter-item-label"><i class="fas fa-clock"></i> Time Slot</label>
                 <div class="custom-select-box">
                   <select id="slotFilter" class="filter-select-enhanced">
-                    <option value="ALL">⏰ All Slots (1 to 8)</option>
+                    <option value="" selected>⏰ Select Time Slot</option>
                     <option value="1">Slot 1 (08:25 AM - 09:25 AM)</option>
                     <option value="2">Slot 2 (09:25 AM - 10:25 AM)</option>
                     <option value="3">Slot 3 (10:30 AM - 11:30 AM)</option>
@@ -560,9 +572,9 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Firebase Config & Master App Scripts -->
-  <script src="firebase-config.js" onerror="this.onerror=null;this.src='js/firebase-config.js';"></script>
-  <script src="timetable-data.js" onerror="this.onerror=null;this.src='js/timetable-data.js';"></script>
-  <script src="app.js" onerror="this.onerror=null;this.src='js/app.js';"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/timetable-data.js"></script>
+  <script src="js/app.js"></script>
 
 </body>
 </html>
