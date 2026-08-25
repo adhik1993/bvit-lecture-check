@@ -425,9 +425,6 @@
                 <button type="button" class="btn-action-excel" onclick="exportReportsToCSV()">
                   <i class="fas fa-file-excel"></i> Export Excel (CSV)
                 </button>
-                <button type="button" class="btn-action-print" onclick="printReportsPDF()">
-                  <i class="fas fa-print"></i> Print Official Report
-                </button>
               </div>
 
               <div class="reports-actions-right">
@@ -456,6 +453,7 @@
                     <th>Status</th>
                     <th>Checked By</th>
                     <th>Remark</th>
+                    <th style="text-align: center;">Memo Action</th>
                   </tr>
                 </thead>
                 <tbody id="reportsTableBody">
@@ -471,12 +469,122 @@
              PANEL 3: MASTER TIMETABLE EXPLORER
              ================================================================== -->
         <section id="panel-timetable" class="tab-panel">
-          <div class="table-card">
-            <div style="padding: 18px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <h3 style="font-size: 18px; font-weight: 800;">Master Timetable Database</h3>
-                <p style="font-size: 12px; color: var(--text-secondary);">BVIT Complete Class & Lab Schedule</p>
+          
+          <!-- Ultra-Modern Custom Styled Dropdowns & Search Filter Suite -->
+          <div class="filter-suite-card tt-filter-card" style="margin-bottom: 22px;">
+            <div class="tt-custom-filter-grid">
+              
+              <!-- 1. Custom Day Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-calendar-day text-primary"></i> Select Day</label>
+                <div class="custom-dropdown-container" id="customDayDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customDayDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-calendar-day trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedDayText">All Days (Mon – Sat)</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu">
+                    <div class="dropdown-item active" data-val="ALL" onclick="handleCustomDaySelect('ALL', 'All Days (Mon – Sat)')">
+                      <div class="item-left"><i class="fas fa-calendar-alt"></i> <span>All Days (Mon – Sat)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Monday" onclick="handleCustomDaySelect('Monday', 'Monday')">
+                      <div class="item-left"><i class="fas fa-calendar-check"></i> <span>Monday</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Tuesday" onclick="handleCustomDaySelect('Tuesday', 'Tuesday')">
+                      <div class="item-left"><i class="fas fa-calendar-check"></i> <span>Tuesday</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Wednesday" onclick="handleCustomDaySelect('Wednesday', 'Wednesday')">
+                      <div class="item-left"><i class="fas fa-calendar-check"></i> <span>Wednesday</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Thursday" onclick="handleCustomDaySelect('Thursday', 'Thursday')">
+                      <div class="item-left"><i class="fas fa-calendar-check"></i> <span>Thursday</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Friday" onclick="handleCustomDaySelect('Friday', 'Friday')">
+                      <div class="item-left"><i class="fas fa-calendar-check"></i> <span>Friday</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Saturday" onclick="handleCustomDaySelect('Saturday', 'Saturday')">
+                      <div class="item-left"><i class="fas fa-calendar-check"></i> <span>Saturday</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              <!-- 2. Custom Floor Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-layer-group text-primary"></i> Select Floor</label>
+                <div class="custom-dropdown-container" id="customFloorDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customFloorDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-layer-group trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedFloorText">All Floors</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu">
+                    <div class="dropdown-item active" data-val="ALL" onclick="handleCustomFloorSelect('ALL', 'All Floors')">
+                      <div class="item-left"><i class="fas fa-layer-group"></i> <span>All Floors</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Ground Floor" onclick="handleCustomFloorSelect('Ground Floor', 'Ground Floor (Labs & W/S)')">
+                      <div class="item-left"><i class="fas fa-flask"></i> <span>Ground Floor (Labs & W/S)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Third Floor" onclick="handleCustomFloorSelect('Third Floor', 'Third Floor')">
+                      <div class="item-left"><i class="fas fa-cube"></i> <span>Third Floor</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="Fourth Floor" onclick="handleCustomFloorSelect('Fourth Floor', 'Fourth Floor')">
+                      <div class="item-left"><i class="fas fa-cube"></i> <span>Fourth Floor</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Smart Search Input -->
+              <div class="filter-item-wrapper search-grow">
+                <label class="filter-item-label"><i class="fas fa-search text-primary"></i> Search Schedule</label>
+                <div class="search-box-enhanced tt-search-box">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" id="ttSearchInput" class="search-input-enhanced" placeholder="Search Room (e.g. 310), Class, Subject, Teacher..." oninput="renderTimetableTable()">
+                  <button type="button" class="btn-clear-search" onclick="resetTimetableFilters()" title="Reset Filters">&times;</button>
+                </div>
+              </div>
+
+              <!-- 4. Reset Button -->
+              <div class="filter-actions-wrapper" style="align-self: flex-end;">
+                <button type="button" class="btn-filter-reset" onclick="resetTimetableFilters()" style="height: 44px; padding: 0 20px; font-weight: 700;">
+                  <i class="fas fa-undo-alt"></i> Reset
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Status Banner Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid #F1F5F9;">
+              <span id="ttResultsBadge" class="results-badge"><i class="fas fa-database"></i> 0 Slots Found</span>
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">
+                <i class="fas fa-cloud-upload-alt text-primary"></i> Live Firestore Cloud Sync Active
+              </span>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="font-size: 16px; font-weight: 800;">Master Timetable Database</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">BVIT Complete Class & Lab Schedule</p>
+              </div>
+              <span id="ttTableRecordsCount" style="font-size: 13px; font-weight: 700; color: var(--primary-light);">0 Slots</span>
             </div>
             <div class="table-responsive">
               <table class="data-table">
@@ -490,6 +598,7 @@
                     <th>Class / Div</th>
                     <th>Subject</th>
                     <th>Teacher Name</th>
+                    <th style="text-align: center;">Edit Action</th>
                   </tr>
                 </thead>
                 <tbody id="timetableTableBody">
@@ -509,8 +618,8 @@
               <h3 style="font-size: 18px; font-weight: 800;">Floor Inspectors</h3>
               <p style="font-size: 13px; color: var(--text-secondary);">Manage authorized staff assigned for daily classroom inspections</p>
             </div>
-            <button class="btn-primary" style="width: auto; padding: 10px 20px;" onclick="openAddCheckerModal()">
-              <i class="fas fa-user-plus"></i> Add New Inspector
+            <button type="button" class="btn-primary" onclick="openAddCheckerModal()">
+              <i class="fas fa-user-plus"></i> <span>Add New Inspector</span>
             </button>
           </div>
 
@@ -567,6 +676,80 @@
       </form>
     </div>
   </div>
+
+  <!-- Edit Timetable Slot Modal -->
+  <div class="modal-overlay" id="editTimetableModal">
+    <div class="modal-box" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-edit text-primary"></i> Edit Timetable Slot</h3>
+        <button type="button" class="btn-close-modal" onclick="closeEditTimetableModal()">&times;</button>
+      </div>
+      <form id="editTimetableForm" onsubmit="saveEditedTimetableSlot(event)">
+        <input type="hidden" id="editSlotIndex">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div class="input-group">
+            <label class="input-label">Day of Week</label>
+            <select id="editDay" class="input-field" style="padding-left: 12px;" required>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Floor</label>
+            <select id="editFloor" class="input-field" style="padding-left: 12px;" required>
+              <option value="Ground Floor">Ground Floor</option>
+              <option value="Third Floor">Third Floor</option>
+              <option value="Fourth Floor">Fourth Floor</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div class="input-group">
+            <label class="input-label">Time Slot</label>
+            <input type="text" id="editTimeSlot" class="input-field" placeholder="e.g. 02:55 PM - 03:55 PM" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Room No</label>
+            <input type="text" id="editRoomNo" class="input-field" placeholder="e.g. 310" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div class="input-group">
+            <label class="input-label">Class / Div</label>
+            <input type="text" id="editClassDiv" class="input-field" placeholder="e.g. FYCM 3" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Subject</label>
+            <input type="text" id="editSubject" class="input-field" placeholder="e.g. ENG" required>
+          </div>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 22px;">
+          <label class="input-label">Teacher Name</label>
+          <input type="text" id="editTeacherName" class="input-field" placeholder="e.g. Mr. MILIND PATIL" required>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-filter-reset" onclick="closeEditTimetableModal()" style="height: 42px;">
+            Cancel
+          </button>
+          <button type="submit" id="btnSaveTimetableSlot" class="btn-primary" style="padding: 10px 24px;">
+            <i class="fas fa-cloud-upload-alt"></i> <span>Save & Update Cloud</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden Container for Batch Printing Memos -->
+  <div id="batchMemoPrintContainer" style="display: none;"></div>
 
   <!-- Real-Time Toast Notifications Container -->
   <div class="toast-container" id="toastContainer"></div>
