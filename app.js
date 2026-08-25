@@ -316,10 +316,29 @@ function resetAllFilters() {
    3. FIRESTORE REAL-TIME DATA OBSERVERS
    ========================================================================== */
 async function loadMasterTimetable() {
-  if (typeof DEFAULT_MASTER_TIMETABLE !== 'undefined' && Array.isArray(DEFAULT_MASTER_TIMETABLE)) {
+  if (typeof DEFAULT_MASTER_TIMETABLE !== 'undefined' && Array.isArray(DEFAULT_MASTER_TIMETABLE) && DEFAULT_MASTER_TIMETABLE.length > 0) {
     masterTimetableEntries = sanitizeTimetable(DEFAULT_MASTER_TIMETABLE);
     renderDashboard();
-    return; // Use fast bundled cache directly with 0 network reads and 0 writes!
+    
+    // Auto-sync clean master timetable bundle to Firestore Cloud
+    try {
+      const jsonStr = JSON.stringify(masterTimetableEntries);
+      db.collection('timetable_master').doc('master_bundle').set({
+        jsonData: jsonStr,
+        updatedAt: Date.now(),
+        version: 3,
+        count: masterTimetableEntries.length
+      }).catch(err => console.log("Cloud sync notice:", err.message));
+      db.collection('timetable').doc('master_bundle').set({
+        jsonData: jsonStr,
+        updatedAt: Date.now(),
+        version: 3,
+        count: masterTimetableEntries.length
+      }).catch(err => console.log("Cloud sync notice:", err.message));
+    } catch (e) {
+      console.log("Auto-sync timetable to Firestore info:", e.message);
+    }
+    return;
   }
 
   try {
@@ -345,11 +364,15 @@ async function loadMasterTimetable() {
 function sanitizeTimetable(entries) {
   return entries.filter(e => {
     // Drop old merged workshop string
-    if (e.roomNo.toUpperCase().includes("WORKSHOP") && e.teacherName.includes("Dhane") && e.teacherName.includes("Mohite")) {
+    if (e.roomNo && e.roomNo.toUpperCase().includes("WORKSHOP") && e.teacherName && e.teacherName.includes("Dhane") && e.teacherName.includes("Mohite")) {
       return false;
     }
     // Drop Chemistry early morning
-    if (e.roomNo.toUpperCase().includes("CHEMISTRY") && (e.timeSlot.includes("08:25") || e.timeSlot.includes("09:25"))) {
+    if (e.roomNo && e.roomNo.toUpperCase().includes("CHEMISTRY") && e.timeSlot && (e.timeSlot.includes("08:25") || e.timeSlot.includes("09:25"))) {
+      return false;
+    }
+    // Drop old erroneous 425/426 joint room entries
+    if (e.roomNo && (e.roomNo.includes("425/426") || e.roomNo.includes("425 / 426"))) {
       return false;
     }
     return true;
@@ -1213,16 +1236,27 @@ function openMemoInNewTab(record) {
             margin-bottom: 28px;
             text-indent: 40px;
           }
-          .memo-footer-section {
+          .memo-principal-row {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 45px;
-            font-size: 13pt;
+            justify-content: flex-end;
+            margin-top: 35px;
+            margin-bottom: 20px;
           }
-          .memo-cc-column { line-height: 1.4; }
-          .memo-principal-column { text-align: center; line-height: 1.3; min-width: 170px; }
-          .memo-sign-space { height: 45px; }
+          .memo-principal-column {
+            text-align: center;
+            line-height: 1.35;
+            min-width: 180px;
+          }
+          .memo-sign-space {
+            height: 48px;
+          }
+          .memo-cc-row {
+            line-height: 1.45;
+            font-size: 11.5pt;
+            margin-top: 15px;
+          }
+          .memo-cc-title { font-weight: bold; }
+          .memo-cc-sub { padding-left: 45px; }
 
           @media print {
             body { background: #FFFFFF; padding: 0; }
@@ -1541,16 +1575,27 @@ function generateBatchMemos() {
             margin-bottom: 28px;
             text-indent: 40px;
           }
-          .memo-footer-section {
+          .memo-principal-row {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 45px;
-            font-size: 13pt;
+            justify-content: flex-end;
+            margin-top: 35px;
+            margin-bottom: 20px;
           }
-          .memo-cc-column { line-height: 1.4; }
-          .memo-principal-column { text-align: center; line-height: 1.3; min-width: 170px; }
-          .memo-sign-space { height: 45px; }
+          .memo-principal-column {
+            text-align: center;
+            line-height: 1.35;
+            min-width: 180px;
+          }
+          .memo-sign-space {
+            height: 48px;
+          }
+          .memo-cc-row {
+            line-height: 1.45;
+            font-size: 11.5pt;
+            margin-top: 15px;
+          }
+          .memo-cc-title { font-weight: bold; }
+          .memo-cc-sub { padding-left: 45px; }
 
           @media print {
             body { background: #FFFFFF; padding: 0; }
