@@ -369,12 +369,28 @@ function observeCheckersList() {
 }
 
 function populateCheckerDropdowns() {
-  const reportChecker = document.getElementById('reportCheckerFilter');
-  if (reportChecker) {
-    reportChecker.innerHTML = '<option value="ALL">All Inspectors</option>';
+  const menu = document.getElementById('reportCheckerMenu');
+  if (menu) {
+    let itemsHtml = `
+      <div class="dropdown-item ${activeReportChecker === 'ALL' ? 'active' : ''}" data-val="ALL" onclick="handleCustomReportCheckerSelect('ALL', 'All Inspectors')">
+        <div class="item-left"><i class="fas fa-users-cog"></i> <span>All Inspectors</span></div>
+        <i class="fas fa-check check-icon"></i>
+      </div>
+    `;
+
     checkersList.forEach(c => {
-      reportChecker.innerHTML += `<option value="${c.name}">${c.name} (${c.assignedFloor || 'Floor'})</option>`;
+      const isAct = activeReportChecker === c.name;
+      const safeName = (c.name || '').replace(/'/g, "\\'");
+      const floorText = c.assignedFloor || c.floor || 'Floor';
+      itemsHtml += `
+        <div class="dropdown-item ${isAct ? 'active' : ''}" data-val="${safeName}" onclick="handleCustomReportCheckerSelect('${safeName}', '${safeName}')">
+          <div class="item-left"><i class="fas fa-user-shield"></i> <span>${c.name} (${floorText})</span></div>
+          <i class="fas fa-check check-icon"></i>
+        </div>
+      `;
     });
+
+    menu.innerHTML = itemsHtml;
   }
 }
 
@@ -849,8 +865,8 @@ let currentFilteredReports = [];
 function filterReports() {
   const fromDate = document.getElementById('reportFromDate').value;
   const toDate = document.getElementById('reportToDate').value;
-  const statusFilter = document.getElementById('reportStatusFilter').value;
-  const checkerFilter = document.getElementById('reportCheckerFilter').value;
+  const statusFilter = activeReportStatus || 'ALL';
+  const checkerFilter = activeReportChecker || 'ALL';
   const query = (document.getElementById('reportSearchInput').value || '').toLowerCase().trim();
 
   const tbody = document.getElementById('reportsTableBody');
@@ -955,7 +971,7 @@ function exportReportsToCSV() {
 
   const fromDate = document.getElementById('reportFromDate').value || 'AllDates';
   const toDate = document.getElementById('reportToDate').value || 'AllDates';
-  const statusVal = document.getElementById('reportStatusFilter').value || 'ALL';
+  const statusVal = activeReportStatus || 'ALL';
 
   // UTF-8 BOM so Marathi / Indian names open cleanly in MS Excel
   let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
@@ -1655,6 +1671,70 @@ let currentFilteredTimetable = [];
 let activeTimetableDay = 'ALL';
 let activeTimetableFloor = 'ALL';
 
+
+
+let activeReportStatus = 'ALL';
+let activeReportChecker = 'ALL';
+
+function handleCustomStatusSelect(val, label) {
+  activeStatusFilter = val;
+  const labelElem = document.getElementById('selectedStatusText');
+  if (labelElem) labelElem.textContent = label;
+
+  document.querySelectorAll('#customStatusDropdown .dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-val') === val);
+  });
+
+  const container = document.getElementById('customStatusDropdown');
+  if (container) container.classList.remove('open');
+
+  renderDashboard();
+}
+
+function handleCustomSlotSelect(val, label) {
+  activeSlotFilter = val;
+  const labelElem = document.getElementById('selectedSlotText');
+  if (labelElem) labelElem.textContent = label;
+
+  document.querySelectorAll('#customSlotDropdown .dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-val') === val);
+  });
+
+  const container = document.getElementById('customSlotDropdown');
+  if (container) container.classList.remove('open');
+
+  renderDashboard();
+}
+
+function handleCustomReportStatusSelect(val, label) {
+  activeReportStatus = val;
+  const labelElem = document.getElementById('selectedReportStatusText');
+  if (labelElem) labelElem.textContent = label;
+
+  document.querySelectorAll('#customReportStatusDropdown .dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-val') === val);
+  });
+
+  const container = document.getElementById('customReportStatusDropdown');
+  if (container) container.classList.remove('open');
+
+  filterReports();
+}
+
+function handleCustomReportCheckerSelect(val, label) {
+  activeReportChecker = val;
+  const labelElem = document.getElementById('selectedReportCheckerText');
+  if (labelElem) labelElem.textContent = label;
+
+  document.querySelectorAll('#customReportCheckerDropdown .dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-val') === val);
+  });
+
+  const container = document.getElementById('customReportCheckerDropdown');
+  if (container) container.classList.remove('open');
+
+  filterReports();
+}
 
 function toggleCustomMenu(dropdownId) {
   const container = document.getElementById(dropdownId);
