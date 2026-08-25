@@ -9,8 +9,8 @@
   <!-- FontAwesome 6 Pro CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   
-  <!-- Master Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Master Stylesheet with auto fallback -->
+  <link rel="stylesheet" href="css/style.css" onerror="this.onerror=null;this.href='style.css';">
 
   <!-- Firebase Web SDK (v10 Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -571,10 +571,10 @@
   <!-- Real-Time Toast Notifications Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Firebase Config & Master App Scripts -->
-  <script src="js/firebase-config.js"></script>
-  <script src="js/timetable-data.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Firebase Config & Master App Scripts with auto fallback -->
+  <script src="js/firebase-config.js" onerror="this.onerror=null;this.src='firebase-config.js';"></script>
+  <script src="js/timetable-data.js" onerror="this.onerror=null;this.src='timetable-data.js';"></script>
+  <script src="js/app.js" onerror="this.onerror=null;this.src='app.js';"></script>
 
 </body>
 </html>
