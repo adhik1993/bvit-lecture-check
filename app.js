@@ -935,14 +935,14 @@ function filterReports() {
       const isNotTaken = (r.status || '').toUpperCase() === 'NOT_TAKEN';
       return `
         <tr>
-          <td><b>#${idx + 1}</b></td>
+          <td style="text-align: center;"><b>${idx + 1}</b></td>
           <td><b>${r.date || selectedDate}</b></td>
-          <td><span class="room-badge">${r.classRoom || 'N/A'}</span></td>
+          <td style="text-align: center;"><span class="room-badge">${r.classRoom || 'N/A'}</span></td>
           <td><b>${r.className || 'N/A'}</b></td>
           <td><b>${r.subject || 'N/A'}</b></td>
           <td>${r.lecturerName || 'N/A'}</td>
           <td>${r.lectureSlotId || r.startTime || 'N/A'}</td>
-          <td>
+          <td style="text-align: center;">
             <span class="pill-badge ${isNotTaken ? 'not-taken' : 'taken'}">
               ${isNotTaken ? '✕ NOT TAKEN' : '✓ TAKEN'}
             </span>
@@ -1861,11 +1861,11 @@ function renderTimetableTable() {
 
   tbody.innerHTML = filtered.map((e, idx) => `
     <tr>
-      <td><b>#${idx + 1}</b></td>
+      <td style="text-align: center;"><b>${idx + 1}</b></td>
       <td><span class="day-badge">${e.day}</span></td>
       <td>${e.timeSlot}</td>
       <td><span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">${e.floor}</span></td>
-      <td><span class="room-badge">${e.roomNo}</span></td>
+      <td style="text-align: center;"><span class="room-badge">${e.roomNo}</span></td>
       <td><b>${e.classDiv}</b></td>
       <td><b>${e.subject}</b></td>
       <td>${e.teacherName}</td>
