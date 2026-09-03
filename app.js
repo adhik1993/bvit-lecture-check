@@ -23,6 +23,9 @@ let activeSlotFilter = '';
 let activeStatusFilter = '';
 let searchQuery = '';
 let notifiedNotTakenIds = new Set();
+let activeTimetableDay = 'ALL';
+let activeTimetableFloor = 'ALL';
+let activeTimetableDept = 'ALL';
 
 // Default 8 Lecture Slots
 const DEFAULT_SLOTS = [
@@ -316,33 +319,16 @@ function resetAllFilters() {
    3. FIRESTORE REAL-TIME DATA OBSERVERS
    ========================================================================== */
 async function loadMasterTimetable() {
-  if (typeof DEFAULT_MASTER_TIMETABLE !== 'undefined' && Array.isArray(DEFAULT_MASTER_TIMETABLE) && DEFAULT_MASTER_TIMETABLE.length > 0) {
-    masterTimetableEntries = sanitizeTimetable(DEFAULT_MASTER_TIMETABLE);
+  observeMasterTimetableRealtime();
+  const localList = (typeof DEFAULT_MASTER_TIMETABLE !== 'undefined' && Array.isArray(DEFAULT_MASTER_TIMETABLE)) ? DEFAULT_MASTER_TIMETABLE : ((typeof window !== 'undefined' && Array.isArray(window.TIMETABLE_MASTER_DATA)) ? window.TIMETABLE_MASTER_DATA : null);
+  if (localList && localList.length > 0 && masterTimetableEntries.length === 0) {
+    masterTimetableEntries = sanitizeTimetable(localList);
     renderDashboard();
-    
-    // Auto-sync clean master timetable bundle to Firestore Cloud
-    try {
-      const jsonStr = JSON.stringify(masterTimetableEntries);
-      db.collection('timetable_master').doc('master_bundle').set({
-        jsonData: jsonStr,
-        updatedAt: Date.now(),
-        version: 3,
-        count: masterTimetableEntries.length
-      }).catch(err => console.log("Cloud sync notice:", err.message));
-      db.collection('timetable').doc('master_bundle').set({
-        jsonData: jsonStr,
-        updatedAt: Date.now(),
-        version: 3,
-        count: masterTimetableEntries.length
-      }).catch(err => console.log("Cloud sync notice:", err.message));
-    } catch (e) {
-      console.log("Auto-sync timetable to Firestore info:", e.message);
-    }
-    return;
   }
+}
 
-  try {
-    const doc = await db.collection('timetable_master').doc('master_bundle').get();
+function observeMasterTimetableRealtime() {
+  db.collection('timetable_master').doc('master_bundle').onSnapshot((doc) => {
     if (doc.exists && doc.data()) {
       const data = doc.data();
       let entries = [];
@@ -354,10 +340,48 @@ async function loadMasterTimetable() {
       if (entries.length > 0) {
         masterTimetableEntries = sanitizeTimetable(entries);
         renderDashboard();
+        if (activeSection === 'timetable') renderTimetableTable();
       }
     }
+  }, (err) => {
+    console.log("Realtime timetable observer notice:", err.message);
+  });
+}
+
+async function forceSyncTimetableToCloud() {
+  const localList = (typeof DEFAULT_MASTER_TIMETABLE !== 'undefined' && Array.isArray(DEFAULT_MASTER_TIMETABLE)) 
+    ? DEFAULT_MASTER_TIMETABLE 
+    : ((typeof window !== 'undefined' && Array.isArray(window.TIMETABLE_MASTER_DATA)) ? window.TIMETABLE_MASTER_DATA : null);
+  
+  if (!localList || localList.length === 0) {
+    alert("No local timetable data found to sync.");
+    return;
+  }
+
+  try {
+    const cleanList = sanitizeTimetable(localList);
+    const jsonStr = JSON.stringify(cleanList);
+    await db.collection('timetable_master').doc('master_bundle').set({
+      jsonData: jsonStr,
+      updatedAt: Date.now(),
+      version: Date.now(),
+      totalEntries: cleanList.length,
+      count: cleanList.length
+    });
+    await db.collection('timetable').doc('master_bundle').set({
+      jsonData: jsonStr,
+      updatedAt: Date.now(),
+      version: Date.now(),
+      totalEntries: cleanList.length,
+      count: cleanList.length
+    });
+    masterTimetableEntries = cleanList;
+    renderDashboard();
+    renderTimetableTable();
+    showLiveToast('Cloud Sync Success', `Uploaded ${cleanList.length} timetable slots live to Firestore!`, 'success');
   } catch (err) {
-    console.log("Firestore cloud timetable info:", err.message);
+    console.error("Force sync error:", err);
+    alert("Error syncing to Firestore: " + err.message);
   }
 }
 
@@ -500,9 +524,18 @@ function isEntryInExactSlot(entryTimeSlot, slotStart) {
   return esNorm === sNorm || (esNorm.length >= 3 && sNorm.startsWith(esNorm.substring(0, 3))) || (sNorm.length >= 3 && esNorm.startsWith(sNorm.substring(0, 3)));
 }
 
-function isCheckInExactSlot(checkSlotId, checkStart, slotStart) {
+function isCheckInExactSlot(checkSlotId, checkStart, slotStart, slotIndex) {
   const sStartNorm = normTime(slotStart);
 
+  // 1. If check has explicit slot index or title (e.g., "Slot 7", "Slot 7 (02:55 PM - 03:55 PM)", "Lecture 7")
+  if (slotIndex != null) {
+    const sId = (checkSlotId || '').toLowerCase();
+    if (sId.includes(`slot ${slotIndex}`) || sId.includes(`slot${slotIndex}`) || sId.includes(`lecture ${slotIndex}`) || sId.includes(`lecture${slotIndex}`)) {
+      return true;
+    }
+  }
+
+  // 2. If check has startTime
   if (checkStart && checkStart.trim().length > 0) {
     const csNorm = normTime(checkStart);
     if (csNorm === sStartNorm || (csNorm.length >= 3 && sStartNorm.startsWith(csNorm.substring(0, 3))) || (sStartNorm.length >= 3 && csNorm.startsWith(sStartNorm.substring(0, 3)))) {
@@ -510,8 +543,11 @@ function isCheckInExactSlot(checkSlotId, checkStart, slotStart) {
     }
   }
 
+  // 3. Extract time part from checkSlotId (e.g. "Slot 7 (02:55 PM - 03:55 PM)" or "02:55 PM - 03:55 PM")
   const checkStartPart = (checkSlotId || '').split(/[-to]/)[0].trim() || checkSlotId || '';
-  const cStartNorm = normTime(checkStartPart);
+  const matchTime = (checkSlotId || '').match(/\b\d{1,2}:\d{2}\b/);
+  const timeToTest = matchTime ? matchTime[0] : checkStartPart;
+  const cStartNorm = normTime(timeToTest);
   if (cStartNorm.length > 0) {
     if (cStartNorm === sStartNorm || (cStartNorm.length >= 3 && sStartNorm.startsWith(cStartNorm.substring(0, 3))) || (sStartNorm.length >= 3 && cStartNorm.startsWith(sStartNorm.substring(0, 3)))) {
       return true;
@@ -528,6 +564,7 @@ function isRoomMatching(r1, r2) {
       .replace(/[-_()/]/g, '')
       .replace(/room/gi, '')
       .replace(/lab/gi, '')
+      .replace(/hall/gi, '')
       .replace(/workshop/gi, 'ws')
       .replace(/w\/s/gi, 'ws')
       .toLowerCase();
@@ -551,8 +588,8 @@ function isRoomMatching(r1, r2) {
     const isComp1 = n1.includes('comp') || n1.includes('ict');
     const isComp2 = n2.includes('comp') || n2.includes('ict');
     if (isComp1 && isComp2) return true;
-    const isCirc1 = n1.includes('circ');
-    const isCirc2 = n2.includes('circ');
+    const isCirc1 = n1.includes('circ') || n1.includes('eoe');
+    const isCirc2 = n2.includes('circ') || n2.includes('eoe');
     if (isCirc1 && isCirc2) return true;
     return false;
   }
@@ -583,15 +620,23 @@ function isClassMatching(c1, c2) {
   if (clean1 === clean2) return true;
 
   function extractBatch(s) {
-    if (s.includes('batcha') || s.includes('bta')) return 'batcha';
-    if (s.includes('batchb') || s.includes('btb')) return 'batchb';
-    if (s.includes('batchc') || s.includes('btc')) return 'batchc';
+    if (s.includes('batcha') || s.includes('bta') || s.includes('bt-a') || s.includes('(a)')) return 'batcha';
+    if (s.includes('batchb') || s.includes('btb') || s.includes('bt-b') || s.includes('(b)')) return 'batchb';
+    if (s.includes('batchc') || s.includes('btc') || s.includes('bt-c') || s.includes('(c)')) return 'batchc';
     return '';
   }
 
   const b1 = extractBatch(clean1);
   const b2 = extractBatch(clean2);
   if (b1 && b2 && b1 !== b2) return false;
+
+  // Base class matching
+  const base1 = clean1.replace(/batch[abc]|bt[abc]|\(batch[abc]\)/g, '');
+  const base2 = clean2.replace(/batch[abc]|bt[abc]|\(batch[abc]\)/g, '');
+  if (base1 && base2 && (base1 === base2 || base1.includes(base2) || base2.includes(base1))) {
+    return true;
+  }
+
   return clean1.includes(clean2) || clean2.includes(clean1);
 }
 
@@ -631,19 +676,28 @@ function renderDashboard() {
   DEFAULT_SLOTS.forEach(slot => {
     const slotEntries = dayFilteredEntries.filter(e => isEntryInExactSlot(e.timeSlot, slot.start));
     
-    // Group by Room + Class + Subject + Teacher
+    // Group by Room + Class + Subject
     const grouped = {};
     slotEntries.forEach(e => {
-      const key = `${e.roomNo.trim()}_${e.classDiv.trim()}_${e.subject.trim()}_${e.teacherName.trim()}`.toLowerCase();
+      const roomKey = (e.roomNo || '').trim().toLowerCase();
+      const classKey = (e.classDiv || '').trim().toLowerCase();
+      const subjectKey = (e.subject || '').trim().toLowerCase();
+      const key = `${roomKey}_${classKey}_${subjectKey}`;
       if (!grouped[key]) {
         grouped[key] = {
           roomNo: e.roomNo,
           floor: e.floor,
           classDiv: e.classDiv,
           subject: e.subject,
-          teacherName: e.teacherName,
+          teachers: [e.teacherName.trim()].filter(Boolean),
+          teacherName: e.teacherName.trim(),
           timeSlot: `${slot.start} - ${slot.end}`
         };
+      } else {
+        if (e.teacherName && !grouped[key].teachers.includes(e.teacherName.trim())) {
+          grouped[key].teachers.push(e.teacherName.trim());
+          grouped[key].teacherName = grouped[key].teachers.join(' / ');
+        }
       }
     });
 
@@ -652,20 +706,24 @@ function renderDashboard() {
     let slotNotTakenCount = 0;
     let slotPendingCount = 0;
 
+    const usedCheckIds = new Set();
     const cardsHtml = roomCards.map(card => {
-      // Find matching check by Room, Slot, Class and Subject
+      // Find matching check strictly by Room, Slot, and Class
       const matchedCheck = allChecks.find(c => 
+        (c.id ? !usedCheckIds.has(c.id) : true) &&
         isRoomMatching(c.classRoom, card.roomNo) &&
-        isCheckInExactSlot(c.lectureSlotId, c.startTime, slot.start) &&
+        isCheckInExactSlot(c.lectureSlotId, c.startTime, slot.start, slot.index) &&
         isClassMatching(c.className, card.classDiv) &&
         ((c.subject || '').toUpperCase().includes(card.subject.toUpperCase()) || (card.subject || '').toUpperCase().includes((c.subject || '').toUpperCase()) || !c.subject)
       ) || allChecks.find(c => 
+        (c.id ? !usedCheckIds.has(c.id) : true) &&
         isRoomMatching(c.classRoom, card.roomNo) &&
-        isCheckInExactSlot(c.lectureSlotId, c.startTime, slot.start) &&
+        isCheckInExactSlot(c.lectureSlotId, c.startTime, slot.start, slot.index) &&
         isClassMatching(c.className, card.classDiv)
-      ) || allChecks.find(c => 
+      ) || allChecks.find(c =>
+        (c.id ? !usedCheckIds.has(c.id) : true) &&
         isRoomMatching(c.classRoom, card.roomNo) &&
-        isCheckInExactSlot(c.lectureSlotId, c.startTime, slot.start)
+        isCheckInExactSlot(c.lectureSlotId, c.startTime, slot.start, slot.index)
       );
 
       let status = 'PENDING';
@@ -673,6 +731,7 @@ function renderDashboard() {
       let remark = '';
 
       if (matchedCheck) {
+        if (matchedCheck.id) usedCheckIds.add(matchedCheck.id);
         status = (matchedCheck.status || (matchedCheck.checkStatus === 1 ? 'NOT_TAKEN' : 'TAKEN')).toUpperCase();
         checkBy = matchedCheck.checkedBy || '';
         remark = matchedCheck.checkerRemark || '';
@@ -714,7 +773,7 @@ function renderDashboard() {
             </div>
             <div class="teacher-line">
               <i class="fas fa-chalkboard-teacher" style="color: var(--primary-light);"></i>
-              <span>${card.teacherName || 'N/A'}</span>
+              <span>${(card.teacherName || 'N/A').toUpperCase()}</span>
             </div>
             ${checkBy ? `
               <div class="checker-line">
@@ -940,7 +999,7 @@ function filterReports() {
           <td style="text-align: center;"><span class="room-badge">${r.classRoom || 'N/A'}</span></td>
           <td><b>${r.className || 'N/A'}</b></td>
           <td><b>${r.subject || 'N/A'}</b></td>
-          <td>${r.lecturerName || 'N/A'}</td>
+          <td>${(r.lecturerName || 'N/A').toUpperCase()}</td>
           <td>${r.lectureSlotId || r.startTime || 'N/A'}</td>
           <td style="text-align: center;">
             <span class="pill-badge ${isNotTaken ? 'not-taken' : 'taken'}">
@@ -1705,10 +1764,6 @@ async function deleteChecker(id) {
 }
 
 let currentFilteredTimetable = [];
-let activeTimetableDay = 'ALL';
-let activeTimetableFloor = 'ALL';
-
-
 
 let activeReportStatus = 'ALL';
 let activeReportChecker = 'ALL';
@@ -1823,6 +1878,21 @@ function handleCustomFloorSelect(floorVal, floorLabel) {
   renderTimetableTable();
 }
 
+function handleCustomDeptSelect(deptVal, deptLabel) {
+  activeTimetableDept = deptVal;
+  const labelElem = document.getElementById('selectedDeptText');
+  if (labelElem) labelElem.textContent = deptLabel;
+
+  document.querySelectorAll('#customDeptDropdown .dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-val') === deptVal);
+  });
+
+  const container = document.getElementById('customDeptDropdown');
+  if (container) container.classList.remove('open');
+
+  renderTimetableTable();
+}
+
 function renderTimetableTable() {
   const tbody = document.getElementById('timetableTableBody');
   if (!tbody) return;
@@ -1837,6 +1907,21 @@ function renderTimetableTable() {
 
   if (activeTimetableFloor !== 'ALL') {
     filtered = filtered.filter(e => (e.floor || '').toLowerCase().includes(activeTimetableFloor.toLowerCase()));
+  }
+
+  if (activeTimetableDept !== 'ALL') {
+    filtered = filtered.filter(e => {
+      const c = (e.classDiv || '').toUpperCase();
+      if (activeTimetableDept === 'CM') return c.includes('CM');
+      if (activeTimetableDept === 'IF') return c.includes('IF');
+      if (activeTimetableDept === 'ME') return c.includes('ME') || c === 'ME';
+      if (activeTimetableDept === 'CE') return c.includes('CE') || c.includes('CE3K') || c.includes('CE5K');
+      if (activeTimetableDept === 'EE') return c.includes('EE');
+      if (activeTimetableDept === 'EJ') return c.includes('EJ');
+      if (activeTimetableDept === 'AN') return c.includes('AN');
+      if (activeTimetableDept === 'FY') return c.includes('FIRST YEAR');
+      return false;
+    });
   }
 
   if (query) {
@@ -1855,7 +1940,7 @@ function renderTimetableTable() {
   if (b2) b2.textContent = countText;
 
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 35px 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-search" style="font-size: 24px; margin-bottom: 8px; display: block; opacity: 0.5;"></i>No timetable slots found for the selected day/floor/search criteria.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 35px 20px; color: var(--text-muted); font-size: 14px;"><i class="fas fa-search" style="font-size: 24px; margin-bottom: 8px; display: block; opacity: 0.5;"></i>No timetable slots found for the selected day/floor/department/search criteria.</td></tr>';
     return;
   }
 
@@ -1868,7 +1953,7 @@ function renderTimetableTable() {
       <td style="text-align: center;"><span class="room-badge">${e.roomNo}</span></td>
       <td><b>${e.classDiv}</b></td>
       <td><b>${e.subject}</b></td>
-      <td>${e.teacherName}</td>
+      <td>${(e.teacherName || '').toUpperCase()}</td>
       <td style="text-align: center;">
         <button type="button" class="btn-table-edit" onclick="openEditTimetableModal(${e.originalIndex})" title="Edit this slot in master timetable">
           <i class="fas fa-edit"></i> Edit
@@ -1881,6 +1966,7 @@ function renderTimetableTable() {
 function resetTimetableFilters() {
   activeTimetableDay = 'ALL';
   activeTimetableFloor = 'ALL';
+  activeTimetableDept = 'ALL';
   
   const dLabel = document.getElementById('selectedDayText');
   if (dLabel) dLabel.textContent = 'All Days (Mon – Sat)';
@@ -1891,6 +1977,12 @@ function resetTimetableFilters() {
   const fLabel = document.getElementById('selectedFloorText');
   if (fLabel) fLabel.textContent = 'All Floors';
   document.querySelectorAll('#customFloorDropdown .dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-val') === 'ALL');
+  });
+
+  const deptLabel = document.getElementById('selectedDeptText');
+  if (deptLabel) deptLabel.textContent = 'All Departments';
+  document.querySelectorAll('#customDeptDropdown .dropdown-item').forEach(item => {
     item.classList.toggle('active', item.getAttribute('data-val') === 'ALL');
   });
 

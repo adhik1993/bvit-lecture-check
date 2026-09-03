@@ -629,7 +629,59 @@
                 </div>
               </div>
 
-              <!-- 3. Smart Search Input -->
+              <!-- 3. Custom Department Dropdown -->
+              <div class="filter-item-wrapper">
+                <label class="filter-item-label"><i class="fas fa-graduation-cap text-primary"></i> Select Department</label>
+                <div class="custom-dropdown-container" id="customDeptDropdown">
+                  <div class="dropdown-trigger-btn" onclick="toggleCustomMenu('customDeptDropdown')">
+                    <div class="dropdown-val-box">
+                      <i class="fas fa-graduation-cap trigger-icon"></i>
+                      <span class="dropdown-current-text" id="selectedDeptText">All Departments</span>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow-icon"></i>
+                  </div>
+                  <div class="dropdown-floating-menu">
+                    <div class="dropdown-item active" data-val="ALL" onclick="handleCustomDeptSelect('ALL', 'All Departments')">
+                      <div class="item-left"><i class="fas fa-university"></i> <span>All Departments</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="CM" onclick="handleCustomDeptSelect('CM', 'Computer Tech (CM)')">
+                      <div class="item-left"><i class="fas fa-laptop-code"></i> <span>Computer Technology (CM)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="IF" onclick="handleCustomDeptSelect('IF', 'Info Tech (IF)')">
+                      <div class="item-left"><i class="fas fa-network-wired"></i> <span>Information Technology (IF)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="ME" onclick="handleCustomDeptSelect('ME', 'Mechanical (ME)')">
+                      <div class="item-left"><i class="fas fa-cogs"></i> <span>Mechanical Engg (ME)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="CE" onclick="handleCustomDeptSelect('CE', 'Civil (CE)')">
+                      <div class="item-left"><i class="fas fa-building"></i> <span>Civil Engineering (CE)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="EE" onclick="handleCustomDeptSelect('EE', 'Electrical (EE)')">
+                      <div class="item-left"><i class="fas fa-bolt"></i> <span>Electrical Engineering (EE)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="EJ" onclick="handleCustomDeptSelect('EJ', 'Electronics (EJ)')">
+                      <div class="item-left"><i class="fas fa-microchip"></i> <span>Electronics & Telecom (EJ)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="AN" onclick="handleCustomDeptSelect('AN', 'AI & Data Science (AN)')">
+                      <div class="item-left"><i class="fas fa-brain"></i> <span>AI & Data Science (AN)</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                    <div class="dropdown-item" data-val="FY" onclick="handleCustomDeptSelect('FY', 'First Year / General')">
+                      <div class="item-left"><i class="fas fa-user-graduate"></i> <span>First Year / General</span></div>
+                      <i class="fas fa-check check-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. Smart Search Input -->
               <div class="filter-item-wrapper search-grow">
                 <label class="filter-item-label"><i class="fas fa-search text-primary"></i> Search Schedule</label>
                 <div class="search-box-enhanced tt-search-box">
@@ -639,10 +691,13 @@
                 </div>
               </div>
 
-              <!-- 4. Reset Button -->
-              <div class="filter-actions-wrapper" style="align-self: flex-end;">
-                <button type="button" class="btn-filter-reset" onclick="resetTimetableFilters()" style="height: 44px; padding: 0 20px; font-weight: 700;">
+              <!-- 4. Reset & Push to Cloud Buttons -->
+              <div class="filter-actions-wrapper" style="align-self: flex-end; display: flex; gap: 8px;">
+                <button type="button" class="btn-filter-reset" onclick="resetTimetableFilters()" style="height: 44px; padding: 0 16px; font-weight: 700;">
                   <i class="fas fa-undo-alt"></i> Reset
+                </button>
+                <button type="button" class="btn-primary" onclick="forceSyncTimetableToCloud()" style="height: 44px; padding: 0 16px; font-weight: 700; font-size: 13px; white-space: nowrap;">
+                  <i class="fas fa-cloud-upload-alt"></i> <span>Push to Cloud</span>
                 </button>
               </div>
 
@@ -834,9 +889,9 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Firebase Config & Master App Scripts -->
-  <script src="firebase-config.js" onerror="this.onerror=null;this.src='js/firebase-config.js';"></script>
-  <script src="timetable-data.js" onerror="this.onerror=null;this.src='js/timetable-data.js';"></script>
-  <script src="app.js" onerror="this.onerror=null;this.src='js/app.js';"></script>
+  <script src="firebase-config.js?v=20260901_4" onerror="this.onerror=null;this.src='js/firebase-config.js?v=20260901_4';"></script>
+  <script src="timetable-data.js?v=20260901_4" onerror="this.onerror=null;this.src='js/timetable-data.js?v=20260901_4';"></script>
+  <script src="app.js?v=20260901_4" onerror="this.onerror=null;this.src='js/app.js?v=20260901_4';"></script>
 
 </body>
 </html>
